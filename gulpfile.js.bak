@@ -1,0 +1,84 @@
+var del = require('del');
+var postcss = require('gulp-postcss');
+var gulp = require('gulp');
+var cssnext = require('postcss-cssnext');
+var cssnano = require('cssnano');
+var uglify = require('gulp-uglify');
+var changed = require('gulp-changed');
+var tinypng = require('gulp-tinypng-compress');
+var imagemin = require('gulp-imagemin');
+ 
+var minifyCss = './minifycss/';
+var minifyJs  = './minifyjs/';
+var minifyImg  = './minifyimg/';
+
+var debug = require('gulp-debug');
+ 
+gulp.task('default', () =>
+    gulp.src('foo.js')
+        .pipe(debug({title: 'unicorn:'}))
+        .pipe(gulp.dest('dist'))
+);
+
+//css压缩
+gulp.task('minifycss', function () {
+    var plugins = [
+        cssnext({
+			browsers: [
+                '> 1%',
+                'last 5 versions',
+                'Firefox ESR'
+            ],
+			'warnForDuplicates':false
+		}),
+        cssnano()
+    ];
+    return gulp.src('./css/*.css')
+		.pipe(changed(minifyCss))
+        .pipe(postcss(plugins))
+        .pipe(gulp.dest(minifyCss));
+});
+
+//js压缩
+gulp.task('minifyjs',function(){
+   return gulp.src('./js/**/*')
+       .pipe(changed(minifyJs))
+       .pipe(uglify())                    
+	   .pipe(gulp.dest(minifyJs))  
+});
+
+//image压缩
+gulp.task('minifyimg',function(){
+   return gulp.src('./image/*')
+        .pipe(imagemin([
+    imagemin.gifsicle({interlaced: true}),
+    imagemin.jpegtran({progressive: true}),
+    imagemin.optipng({optimizationLevel: 5})
+]))
+        .pipe(gulp.dest(minifyImg))
+});
+//gulp.task('tinypng', function () {
+//    gulp.src('./image/**/*.{png,jpg,jpeg}')
+//        .pipe(tinypng({
+//            key: '3cVo5YcavdSKzH4M_-JzyNbboFRXaMZV',
+//            sigFile: 'images/.tinypng-sigs',
+//            log: true
+//        }))
+//        .pipe(gulp.dest(minifyImg));
+//});
+//删除指定文件
+gulp.task('del',function(cb){
+	del([
+		'./minifycss/**/*',
+		'./minifyjs/**/*',
+		'./minifyimg/**/*'
+	],cb)
+});
+
+//gulp.task('default',function(){
+//    gulp.start('del','minifycss','minifyjs','minifyimg');
+//});
+
+gulp.task('default',function(){
+    gulp.start('del','minifyimg');
+});
