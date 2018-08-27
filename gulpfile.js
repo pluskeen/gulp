@@ -10,10 +10,10 @@ var cssnext = require("postcss-cssnext");
 var cssnano = require("cssnano");
 var uglify = require("gulp-uglify");
 var changed = require("gulp-changed");
-var tinypng = require("gulp-tinypng-compress");
 var imagemin = require("gulp-imagemin");
 var cache = require("gulp-cache"); //使用 gulp-cache 只压缩修改的图片，没有修改的图片直接从缓存文件读取
 var pngquant = require("imagemin-pngquant");
+var babel = require("gulp-babel");
 
 var minifyCss = "./minifycss/";
 var minifyJs = "./minifyjs/";
@@ -23,7 +23,7 @@ var minifyImg = "./minifyimg/";
 gulp.task("minifycss", function() {
   var plugins = [
     cssnext({
-      browsers: ["> 1%", "last 5 versions", "Firefox ESR"],
+      browsers: ["> 3%", "last 5 versions", "Firefox ESR"],
       warnForDuplicates: false
     }),
     cssnano()
@@ -40,6 +40,7 @@ gulp.task("minifyjs", function() {
   return gulp
     .src("./js/**/*")
     .pipe(changed(minifyJs))
+    .pipe(babel())
     .pipe(uglify())
     .pipe(gulp.dest(minifyJs));
 });
@@ -69,24 +70,16 @@ gulp.task("minifyimg", function() {
     )
     .pipe(gulp.dest(minifyImg));
 });
-//gulp.task('tinypng', function () {
-//    gulp.src('./image/**/*.{png,jpg,jpeg}')
-//        .pipe(tinypng({
-//            key: '3cVo5YcavdSKzH4M_-JzyNbboFRXaMZV',
-//            sigFile: 'images/.tinypng-sigs',
-//            log: true
-//        }))
-//        .pipe(gulp.dest(minifyImg));
-//});
-//删除指定文件
+
+// 删除文件
 gulp.task("del", function(cb) {
   del(["./minifycss/**/*", "./minifyjs/**/*", "./minifyimg/**/*"], cb);
 });
 
-//gulp.task('default',function(){
-//    gulp.start('del','minifycss','minifyjs','minifyimg');
-//});
-
-gulp.task("default", function() {
-  gulp.start("del", "minifyimg");
+gulp.task('default',function(){
+   gulp.start('del','minifycss','minifyjs','minifyimg');
 });
+
+// gulp.task("default", function() {
+//   gulp.start("del");
+// });
