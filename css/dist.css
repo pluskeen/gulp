@@ -1,0 +1,5 @@
+.test {
+  display: flex;
+  justify-content: center;
+  background: url('../image/dist.svg');
+}
