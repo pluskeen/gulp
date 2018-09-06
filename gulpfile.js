@@ -54,7 +54,7 @@ gulp.task("minify:css:md5", function() {
       .pipe(
         postcss([
           cssnext({
-            browsers: ["> 3%", "last 5 versions", "Firefox ESR"],
+            browsers: ["> 1%", "last 6 versions", "Firefox ESR"],
             warnForDuplicates: false
           }),
           cssnano()
@@ -116,7 +116,7 @@ gulp.task("minify:img", function() {
           [
             imagemin.gifsicle({ interlaced: true }), //类型：Boolean 默认：false 隔行扫描gif进行渲染
             imagemin.jpegtran({ progressive: true }), //类型：Boolean 默认：false 无损压缩jpg图片
-            imagemin.optipng({ optimizationLevel: 5 }), //类型：Number  默认：3  取值范围：0-7（优化等级）
+            imagemin.optipng({ optimizationLevel: 3 }), //类型：Number  默认：3  取值范围：0-7（优化等级）
             imagemin.svgo({
               plugins: [
                 { removeViewBox: true }, // removeViewBox 移除svg的viewbox属性
@@ -228,6 +228,11 @@ gulp.task("copy:asset", function() {
   return gulp.src(assetPath + "**/*").pipe(gulp.dest(distPath + "asset/"));
 });
 
+//复制字体文件
+gulp.task("copy:fonts", function() {
+  return gulp.src(assetPath + "**/*").pipe(gulp.dest(distPath + "fonts"));
+});
+
 //复制图片文件
 gulp.task("copy:img", function() {
   //如果需要压缩图片，那么这步可以省略
@@ -260,6 +265,7 @@ gulp.task("default", function(cb) {
   seq(
     "clean:dist",
     "copy:asset",
+    "copy:fonts",
     "minify:js:md5",
     "minify:css:md5",
     "minify:img:md5",
