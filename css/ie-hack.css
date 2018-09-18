@@ -3,3 +3,9 @@
 .l_sign_tit {
   line-height: 16px;
 }
+
+@media screen and ( device-pixel-ratio : 2){
+  .border-1px{
+    transform: scaleX(.5);
+  }
+}

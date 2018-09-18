@@ -65,7 +65,7 @@ opts
 cb(event)
 类型： Function
 每次变动需要执行的 callback。
-callback 会被传入一个名为 event 的对象。这个对象描述了所监控到的变动：
+callback 会被传入一个名为 event 的对象。这个对象描述了所监控到的变动。
 event.type
 类型： String
 发生的变动的类型：added, changed 或者 deleted。
